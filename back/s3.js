@@ -4,7 +4,7 @@ import jwt_decode from "jwt-decode";
 dotenv.config();
 
 const region = "us-east-2";
-const bucketName = process.env.AWX_BUCKET_NAME;
+const bucketName = process.env.AWS_BUCKET_NAME;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
