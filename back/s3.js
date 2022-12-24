@@ -25,7 +25,7 @@ export async function generateUploadURL(file_name, cf_authorization_cookie) {
 
   const params = {
     Bucket: bucketName,
-    Key: imageName,
+    Key: aws_doc_name,
     Expires: 60,
   };
 
