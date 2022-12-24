@@ -6,7 +6,7 @@ import path from "path";
 
 const app = express();
 
-const whitelist = ["http://127.0.0.1:8080", "https://cloud.npullen.com"];
+const whitelist = ["http://127.0.0.1:8080", "https://upload.npullen.com"];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
