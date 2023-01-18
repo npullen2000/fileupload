@@ -1,23 +1,25 @@
-<!DOCTYPE  html>
-<!-- Coding By CodingNepal - youtube.com/codingnepal -->
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag & Drop or Browse: File Upload | CodingNepal</title>
-    <link rel="stylesheet" href="index.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-</head>
-<body>
-  <div class="drag-area">
-    <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
-    <header>Drag & Drop to Upload File</header>
-    <span>OR</span>
-    <button>Browse File</button>
-    <input type="file" hidden>
+<div class="upload">
+ <div class="upload-files">
+  <header>
+   <p>
+    <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+    <span class="up">up</span>
+    <span class="load">load</span>
+   </p>
+  </header>
+  <div class="body" id="drop">
+   <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
+   <p class="pointer-none"><b>Drag and drop</b> files here <br /> or <a href="" id="triggerFile">browse</a> to begin the upload</p>
+			<input type="file" multiple="multiple" />
   </div>
-
-  <script src="index.js"></script>
-
-</body>
-</html>
+  <footer>
+   <div class="divider">
+    <span><AR>FILES</AR></span>
+   </div>
+   <div class="list-files">
+    <!--   template   -->
+   </div>
+			<button class="importar">UPDATE FILES</button>
+  </footer>
+ </div>
+</div>
