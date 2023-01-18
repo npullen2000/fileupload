@@ -1,76 +1,62 @@
-//DOM
-const $ = document.querySelector.bind(document);
+const form = document.querySelector("form"),
+fileInput = document.querySelector(".file-input"),
+progressArea = document.querySelector(".progress-area"),
+uploadedArea = document.querySelector(".uploaded-area");
 
-//APP
-let App = {};
-App.init = (function() {
-	//Init
-	function handleFileSelect(evt) {
-		const files = evt.target.files; // FileList object
+form.addEventListener("click", () =>{
+  fileInput.click();
+});
 
-		//files template
-		let template = `${Object.keys(files)
-			.map(file => `<div class="file file--${file}">
-     <div class="name"><span>${files[file].name}</span></div>
-     <div class="progress active"></div>
-     <div class="done">
-	<a href="" target="_blank">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 1000 1000">
-		<g><path id="path" d="M500,10C229.4,10,10,229.4,10,500c0,270.6,219.4,490,490,490c270.6,0,490-219.4,490-490C990,229.4,770.6,10,500,10z M500,967.7C241.7,967.7,32.3,758.3,32.3,500C32.3,241.7,241.7,32.3,500,32.3c258.3,0,467.7,209.4,467.7,467.7C967.7,758.3,758.3,967.7,500,967.7z M748.4,325L448,623.1L301.6,477.9c-4.4-4.3-11.4-4.3-15.8,0c-4.4,4.3-4.4,11.3,0,15.6l151.2,150c0.5,1.3,1.4,2.6,2.5,3.7c4.4,4.3,11.4,4.3,15.8,0l308.9-306.5c4.4-4.3,4.4-11.3,0-15.6C759.8,320.7,752.7,320.7,748.4,325z"</g>
-		</svg>
-						</a>
-     </div>
-    </div>`)
-			.join("")}`;
+fileInput.onchange = ({target})=>{
+  let file = target.files[0];
+  if(file){
+    let fileName = file.name;
+    if(fileName.length >= 12){
+      let splitName = fileName.split('.');
+      fileName = splitName[0].substring(0, 13) + "... ." + splitName[1];
+    }
+    uploadFile(fileName);
+  }
+}
 
-		$("#drop").classList.add("hidden");
-		$("footer").classList.add("hasFiles");
-		$(".importar").classList.add("active");
-		setTimeout(() => {
-			$(".list-files").innerHTML = template;
-		}, 1000);
-
-		Object.keys(files).forEach(file => {
-			let load = 2000 + (file * 2000); // fake load
-			setTimeout(() => {
-				$(`.file--${file}`).querySelector(".progress").classList.remove("active");
-				$(`.file--${file}`).querySelector(".done").classList.add("anim");
-			}, load);
-		});
-	}
-
-	// trigger input
-	$("#triggerFile").addEventListener("click", evt => {
-		evt.preventDefault();
-		$("input[type=file]").click();
-	});
-
-	// drop events
-	$("#drop").ondragleave = evt => {
-		$("#drop").classList.remove("active");
-		evt.preventDefault();
-	};
-	$("#drop").ondragover = $("#drop").ondragenter = evt => {
-		$("#drop").classList.add("active");
-		evt.preventDefault();
-	};
-	$("#drop").ondrop = evt => {
-		$("input[type=file]").files = evt.dataTransfer.files;
-		$("footer").classList.add("hasFiles");
-		$("#drop").classList.remove("active");
-		evt.preventDefault();
-	};
-
-	//upload more
-	$(".importar").addEventListener("click", () => {
-		$(".list-files").innerHTML = "";
-		$("footer").classList.remove("hasFiles");
-		$(".importar").classList.remove("active");
-		setTimeout(() => {
-			$("#drop").classList.remove("hidden");
-		}, 500);
-	});
-
-	// input change
-	$("input[type=file]").addEventListener("change", handleFileSelect);
-})();
+function uploadFile(name){
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "php/upload.php");
+  xhr.upload.addEventListener("progress", ({loaded, total}) =>{
+    let fileLoaded = Math.floor((loaded / total) * 100);
+    let fileTotal = Math.floor(total / 1000);
+    let fileSize;
+    (fileTotal < 1024) ? fileSize = fileTotal + " KB" : fileSize = (loaded / (1024*1024)).toFixed(2) + " MB";
+    let progressHTML = `<li class="row">
+                          <i class="fas fa-file-alt"></i>
+                          <div class="content">
+                            <div class="details">
+                              <span class="name">${name} • Uploading</span>
+                              <span class="percent">${fileLoaded}%</span>
+                            </div>
+                            <div class="progress-bar">
+                              <div class="progress" style="width: ${fileLoaded}%"></div>
+                            </div>
+                          </div>
+                        </li>`;
+    uploadedArea.classList.add("onprogress");
+    progressArea.innerHTML = progressHTML;
+    if(loaded == total){
+      progressArea.innerHTML = "";
+      let uploadedHTML = `<li class="row">
+                            <div class="content upload">
+                              <i class="fas fa-file-alt"></i>
+                              <div class="details">
+                                <span class="name">${name} • Uploaded</span>
+                                <span class="size">${fileSize}</span>
+                              </div>
+                            </div>
+                            <i class="fas fa-check"></i>
+                          </li>`;
+      uploadedArea.classList.remove("onprogress");
+      uploadedArea.insertAdjacentHTML("afterbegin", uploadedHTML);
+    }
+  });
+  let data = new FormData(form);
+  xhr.send(data);
+}
