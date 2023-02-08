@@ -11,7 +11,10 @@
   </head>
   <body>
     <form id="imageForm">
-      <input id="imageInput" type="file" />
+      <input type="file" name="file1" id="imageForm" onchange="uploadFile()"><br>
+  <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+  <h3 id="status"></h3>
+  <p id="loaded_n_total"></p>
       <button type="submit">Upload</button>
     </form>
 
